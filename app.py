@@ -48,7 +48,10 @@ def list():
         ListOfUrls = file.readlines()
 
     for item in ListOfUrls:
-        title, url, time= item.split("-------")
+        parts = item.strip().split("-------")
+        if len(parts) != 3 or parts == "":
+            print(parts)
+            continue  # skip invalid/old lines
         if "youtube" in url: 
             domain, id = url.split("=")
             videoId = f"https://img.youtube.com/vi/{id}/0.jpg"
