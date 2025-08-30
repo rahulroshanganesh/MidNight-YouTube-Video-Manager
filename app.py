@@ -33,7 +33,7 @@ def go():
     title = request.form.get("title")
 
     with open("db.txt", 'a') as file:
-        file.write(title + "-------" + url + "-------" + str(datetime.now()))
+        file.write(title + "-------" + url + "-------" + str(datetime.now()) + "\n")
     return f"""
             <h1>Added {title}</h1>
             <button><h3><a href="/list"> See lists </a></h3></button>
