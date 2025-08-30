@@ -31,3 +31,15 @@ Finallyyy!! run
 ```
 python app.py
 ```
+
+Future ideas to integrate 
+- Building a Good frontend.
+- Cleaning up the `app.py` code.
+- Add Register and Login Page.
+- Recommend videos differently
+- If playlist URL is given compute required like -
+  - average views
+  - average length
+  - Graph to show how much people liked the videos
+- Categorise videos based on the topic the video is.
+- Use AI to summarise the video
