@@ -1,6 +1,7 @@
 from flask import *
 from datetime import datetime
 import validators
+from youtubeSummarizer import callModel
 
 app = Flask(__name__)
 
@@ -28,12 +29,11 @@ def home():
 
 @app.route("/go", methods=["POST"])
 def go():
-    # if request.method == "POST":
     url = request.form.get("url")
     title = request.form.get("title")
 
     with open("db.txt", 'a') as file:
-        file.write(title + "-------" + url + "-------" + str(datetime.now()) +"\n")
+        file.write(title + "-------" + url + "-------" + str(datetime.now()))
     return f"""
             <h1>Added {title}</h1>
             <button><h3><a href="/list"> See lists </a></h3></button>
@@ -43,17 +43,18 @@ def go():
 def list():
     ListOfUrls = []
     template = ""
-    # component = ""
     with open("db.txt", "r") as file:
         ListOfUrls = file.readlines()
 
     for item in ListOfUrls:
         parts = item.strip().split("-------")
         if len(parts) != 3 or parts == "":
-            print(parts)
             continue  # skip invalid/old lines
+
+        title, url, time = parts
+
         if "youtube" in url: 
-            domain, id = url.split("=")
+            domain,     id = url.split("=")
             videoId = f"https://img.youtube.com/vi/{id}/0.jpg"
         else:
             videoId = "https://support.vevo.com/hc/article_attachments/16164505898395"
@@ -79,6 +80,11 @@ def list():
                     <form method="post" action="/remove"> 
                         <input type="hidden" name="id" value="{id}">
                         <input type="submit" value="DELETE" style="color:red; font-size:20px;">
+                    </form>
+                    
+                    <form method="post" action="/summarizer"> 
+                        <input type="hidden" name="id" value="{id}">
+                        <input type="submit" value="SUMMARIZE" style="color:green; font-size:20px;">
                     </form>
                 </li>
             """
@@ -115,6 +121,17 @@ def remove():
             window.location.href = "/";
         }}, 3000);
     </script>
+    """
+
+@app.route("/summarizer", methods=["POST"])
+def summarizer():
+    id = request.form.get("id")
+    summary = callModel(id)
+    return f"""
+    <h1 style="text-align:center;">Summary</h1>
+        <p style="font:size15px; color:grey;">{summary}</p>
+        <button><a href="/list">Show List</a></button>
+        <button><a href="/">Add Item</a></button>
     """
 
 if __name__ == "__main__":
